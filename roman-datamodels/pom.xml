@@ -23,6 +23,5 @@
             <artifactId>asdf-compression-commons-compress</artifactId>
             <version>${asdf.version}</version>
         </dependency>
-
     </dependencies>
 </project>

@@ -50,9 +50,7 @@
     <maven-plugin-tools.version>3.15.1</maven-plugin-tools.version>
     <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
     <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
-    <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
     <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
-    <central-publishing-plugin.version>0.7.0</central-publishing-plugin.version>
     <junit.version>5.11.4</junit.version>
     <junit-pioneer.version>2.3.0</junit-pioneer.version>
     <jacoco-plugin.version>0.8.13</jacoco-plugin.version>
@@ -178,28 +176,6 @@
             </execution>
           </executions>
         </plugin>
-        <plugin>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>${maven-gpg-plugin.version}</version>
-          <executions>
-            <execution>
-              <id>sign-artifacts</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>sign</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.sonatype.central</groupId>
-          <artifactId>central-publishing-maven-plugin</artifactId>
-          <version>${central-publishing-plugin.version}</version>
-          <extensions>true</extensions>
-          <configuration>
-            <publishingServerId>central</publishingServerId>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -230,13 +206,6 @@
         <artifactId>maven-source-plugin</artifactId>
       </plugin>
       <plugin>
-        <artifactId>maven-gpg-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.central</groupId>
-        <artifactId>central-publishing-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>${jacoco-plugin.version}</version>
@@ -250,6 +219,14 @@
       </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/spacetelescope/roman_datamodels_java</url>
+    </repository>
+  </distributionManagement>
 
   <modules>
     <module>roman-datamodels</module>
