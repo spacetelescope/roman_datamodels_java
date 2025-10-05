@@ -33,7 +33,7 @@ jobs:
 
       - name: Install test file generator requirements
         run: |
-          pip install asdf numpy astropy gwcs roman_datamodels
+          pip install -r test-requirements.txt
 
       - name: Locate Python
         id: locate-python
