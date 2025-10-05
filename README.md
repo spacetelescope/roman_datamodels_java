@@ -23,6 +23,7 @@ the python binary for your new environment:
 
 ```
 $ export ASDF_JAVA_TESTS_PYTHON_PATH=`which python`
+```
 
 ### Run the tests
 
