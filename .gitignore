@@ -26,3 +26,5 @@ replay_pid*
 build
 
 .flattened-pom.xml
+
+.vscode/
