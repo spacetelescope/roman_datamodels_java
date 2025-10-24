@@ -1,4 +1,4 @@
-name: Publish
+name: Publish to Maven Central
 
 on:
   workflow_dispatch:
@@ -7,25 +7,15 @@ on:
         description: 'Release version (e.g., 1.0.0)'
         required: false
         type: string
-      target:
-        description: 'Deployment target'
-        required: true
-        type: choice
-        options:
-          - maven-central
-          - github-packages
-          - both
-        default: 'both'
   release:
     types: [ created ]
 
 jobs:
   publish:
-    name: Publish to ${{ github.event_name == 'release' && 'Maven Central' || inputs.target }}
+    name: Publish to Maven Central
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -51,8 +41,7 @@ jobs:
         id: locate-python
         run: echo "python-path=$(which python)" >> "$GITHUB_OUTPUT"
 
-      - name: Import GPG key (Maven Central only)
-        if: github.event_name == 'release' || inputs.target == 'maven-central' || inputs.target == 'both'
+      - name: Import GPG key
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -74,7 +63,6 @@ jobs:
           mvn versions:set -DnewVersion="${{ inputs.release-version }}"
 
       - name: Create settings.xml for Maven Central
-        if: github.event_name == 'release' || inputs.target == 'maven-central' || inputs.target == 'both'
         run: |
           mkdir -p ~/.m2
           cat > ~/.m2/settings.xml << 'EOF'
@@ -96,15 +84,8 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Deploy to Maven Central
-        if: github.event_name == 'release' || inputs.target == 'maven-central' || inputs.target == 'both'
         run: mvn deploy -DskipTests=true
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Deploy to GitHub Packages
-        if: inputs.target == 'github-packages' || inputs.target == 'both'
-        run: mvn deploy -DskipTests=true -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/spacetelescope/roman_datamodels_java
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
