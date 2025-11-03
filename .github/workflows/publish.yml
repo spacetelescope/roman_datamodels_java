@@ -2,6 +2,12 @@ name: Publish to Maven Central
 
 on:
   workflow_dispatch:
+    inputs:
+      release-version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        type: string
+
   release:
     types: [ created ]
 
@@ -41,10 +47,17 @@ jobs:
         id: locate-python
         run: echo "python-path=$(which python)" >> "$GITHUB_OUTPUT"
 
-      - name: Set version
+      - name: Set version from release tag
+        if: github.event_name == 'release'
         run: mvn versions:set -DnewVersion="${REF_NAME#v}"
         env:
           REF_NAME: ${{ github.ref_name }}
+
+      - name: Set version from workflow input
+        if: github.event_name == 'workflow_dispatch'
+        run: mvn versions:set -DnewVersion="${VERSION#v}"
+        env:
+          VERSION: ${{ inputs.release-version }}
 
       - name: Publish
         run: mvn --batch-mode deploy
