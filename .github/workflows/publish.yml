@@ -1,12 +1,6 @@
 name: Publish to Maven Central
 
 on:
-  workflow_dispatch:
-    inputs:
-      release-version:
-        description: 'Release version (e.g., 1.0.0)'
-        required: false
-        type: string
   release:
     types: [ created ]
 
@@ -26,7 +20,12 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'corretto'
+          distribution: corretto
+          server-id: central
+          server-username: SERVER_USERNAME
+          server-password: SERVER_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -41,51 +40,15 @@ jobs:
         id: locate-python
         run: echo "python-path=$(which python)" >> "$GITHUB_OUTPUT"
 
-      - name: Import GPG key
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: |
-          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-          gpg --list-secret-keys --keyid-format LONG
-
       - name: Set version from release tag
-        if: github.event_name == 'release'
-        run: |
-          VERSION="${{ github.ref_name }}"
-          # Remove 'v' prefix if present
-          VERSION="${VERSION#v}"
-          mvn versions:set -DnewVersion="$VERSION"
+        run: mvn versions:set -DnewVersion="${REF_NAME#v}"
+        env:
+          REF_NAME: ${{ github.ref_name }}
 
-      - name: Set version from workflow input
-        if: github.event_name == 'workflow_dispatch' && inputs.release-version != ''
-        run: |
-          mvn versions:set -DnewVersion="${{ inputs.release-version }}"
-
-      - name: Create settings.xml for Maven Central
-        run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml << 'EOF'
-          <settings>
-            <servers>
-              <server>
-                <id>central</id>
-                <username>${env.CENTRAL_USERNAME}</username>
-                <password>${env.CENTRAL_TOKEN}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
-
-      - name: Run tests
-        run: mvn clean verify
+      - name: Publish
+        run: mvn --batch-mode deploy
         env:
           ASDF_JAVA_TESTS_PYTHON_PATH: ${{ steps.locate-python.outputs.python-path }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Deploy to Maven Central
-        run: mvn deploy -DskipTests=true
-        env:
-          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
-          CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
+          SERVER_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          SERVER_PASSWORD: ${{ secrets.CENTRAL_TOKEN }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

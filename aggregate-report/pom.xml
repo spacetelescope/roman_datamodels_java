@@ -9,6 +9,8 @@
 
     <artifactId>aggregate-report</artifactId>
 
+    <name>aggregate-report</name>
+
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
