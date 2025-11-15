@@ -27,7 +27,7 @@
   <scm>
     <connection>scm:git:git://github.com/spacetelescope/roman_datamodels_java.git</connection>
     <developerConnection>scm:git:ssh://github.com/spacetelescope/roman_datamodels_java.git</developerConnection>
-    <url>https://github.com/asdf-format/spacetelescope/roman_datamodels_java/tree/main</url>
+    <url>https://github.com/spacetelescope/roman_datamodels_java/tree/main</url>
   </scm>
 
   <packaging>pom</packaging>
