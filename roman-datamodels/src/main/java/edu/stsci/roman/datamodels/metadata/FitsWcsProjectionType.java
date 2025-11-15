@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * Standard FITS WCS projection type.
+ */
 @RequiredArgsConstructor
 public enum FitsWcsProjectionType {
     AIR("tag:stsci.edu:asdf/transform/airy-"),

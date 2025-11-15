@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.asdfformat.asdf.ndarray.DoubleNdArray;
 import org.asdfformat.asdf.node.AsdfNode;
 
+/**
+ * Wrapper for a Roman GWCS object that exposes FITS WCS parameters.
+ */
 @RequiredArgsConstructor
 public class FitsWcs {
     private static final String TRANSFORM_TAG_PREFIX = "tag:stsci.edu:gwcs/fitswcs_imaging-";

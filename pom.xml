@@ -27,7 +27,7 @@
   <scm>
     <connection>scm:git:git://github.com/spacetelescope/roman_datamodels_java.git</connection>
     <developerConnection>scm:git:ssh://github.com/spacetelescope/roman_datamodels_java.git</developerConnection>
-    <url>https://github.com/asdf-format/spacetelescope/roman_datamodels_java/tree/main</url>
+    <url>https://github.com/spacetelescope/roman_datamodels_java/tree/main</url>
   </scm>
 
   <packaging>pom</packaging>
@@ -39,7 +39,7 @@
     <lombok.version>1.18.36</lombok.version>
     <snakeyaml.version>2.4</snakeyaml.version>
     <guava.version>33.4.8-jre</guava.version>
-    <asdf.version>0.1-alpha-6</asdf.version>
+    <asdf.version>0.1-alpha-8</asdf.version>
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
     <flatten-maven-plugin.version>1.7.0</flatten-maven-plugin.version>
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>

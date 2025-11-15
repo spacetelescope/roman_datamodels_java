@@ -14,12 +14,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.asdfformat</groupId>
+            <groupId>org.asdf-format</groupId>
             <artifactId>asdf-core</artifactId>
             <version>${asdf.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.asdfformat</groupId>
+            <groupId>org.asdf-format</groupId>
             <artifactId>asdf-compression-commons-compress</artifactId>
             <version>${asdf.version}</version>
         </dependency>

@@ -13,12 +13,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+/**
+ * Static methods for reading Roman ASDF files.
+ */
 public class RomanDatamodels {
     private static final Map<String, BiFunction<AsdfFile, AsdfNode, RomanModel<?>>> MODELS = new HashMap<>();
     static {
         MODELS.put(MosaicModel.TAG_PREFIX, MosaicModel::new);
     }
 
+    private RomanDatamodels() {
+    }
+
+    /**
+     * Open a Roman ASDF file and wrap it in a datamodel class.
+     * @param path path to the .asdf file
+     * @return datamodel instance (type appropriate to the file)
+     * @throws IOException I/O failure
+     * @throws RomanDatamodelsException when this library cannot handle the file content
+     */
     public static RomanModel<?> open(final Path path) throws IOException {
         final AsdfFile asdfFile = Asdf.open(path);
 

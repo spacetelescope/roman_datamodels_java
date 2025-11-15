@@ -10,6 +10,9 @@ import org.asdfformat.asdf.node.AsdfNode;
 
 import java.io.IOException;
 
+/**
+ * The schema for WFI Level 3 mosaics.
+ */
 @RequiredArgsConstructor
 public class MosaicModel implements RomanImageModel<MosaicModel.Meta> {
     public static final String TAG_PREFIX = "asdf://stsci.edu/datamodels/roman/tags/wfi_mosaic-";

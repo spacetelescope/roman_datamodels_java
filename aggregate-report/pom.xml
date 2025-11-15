@@ -16,16 +16,6 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.stsci</groupId>-->
-<!--            <artifactId>roman-datamodels</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.stsci</groupId>-->
-<!--            <artifactId>roman-datamodels-generator</artifactId>-->
-<!--            <version>${revision}</version>-->
-<!--        </dependency>-->
     </dependencies>
 
     <build>
