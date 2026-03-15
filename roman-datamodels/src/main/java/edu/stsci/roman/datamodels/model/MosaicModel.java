@@ -19,6 +19,7 @@ public class MosaicModel implements RomanImageModel<MosaicModel.Meta> {
 
     private final AsdfFile asdfFile;
     private final AsdfNode node;
+    private final boolean manageAsdfFile;
 
     /**
      * Metadata.
@@ -39,10 +40,12 @@ public class MosaicModel implements RomanImageModel<MosaicModel.Meta> {
 
     @Override
     public void close() {
-        try {
-            asdfFile.close();
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
+        if (manageAsdfFile) {
+            try {
+                asdfFile.close();
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
