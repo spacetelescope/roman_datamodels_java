@@ -3,6 +3,7 @@ package edu.stsci.roman.datamodels;
 import edu.stsci.roman.datamodels.exception.RomanDatamodelsException;
 import edu.stsci.roman.datamodels.model.MosaicModel;
 import edu.stsci.roman.datamodels.model.RomanModel;
+import org.apache.commons.lang3.function.TriFunction;
 import org.asdfformat.asdf.Asdf;
 import org.asdfformat.asdf.AsdfFile;
 import org.asdfformat.asdf.node.AsdfNode;
@@ -11,13 +12,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 /**
  * Static methods for reading Roman ASDF files.
  */
 public class RomanDatamodels {
-    private static final Map<String, BiFunction<AsdfFile, AsdfNode, RomanModel<?>>> MODELS = new HashMap<>();
+    private static final Map<String, TriFunction<AsdfFile, AsdfNode, Boolean, RomanModel<?>>> MODELS = new HashMap<>();
     static {
         MODELS.put(MosaicModel.TAG_PREFIX, MosaicModel::new);
     }
@@ -35,24 +35,35 @@ public class RomanDatamodels {
     public static RomanModel<?> open(final Path path) throws IOException {
         final AsdfFile asdfFile = Asdf.open(path);
 
-        if (!asdfFile.getTree().containsKey("roman")) {
+        try {
+            return open(asdfFile, true);
+        } catch (final Exception e) {
             asdfFile.close();
+            throw e;
+        }
+    }
+
+    /**
+     * Wrap a Roman ASDF file in a datamodel class.
+     * @param asdfFile open ASDF file
+     * @return datamodel instance (type appropriate to the file)
+     * @throws RomanDatamodelsException when this library cannot handle the file content
+     */
+    public static RomanModel<?> open(final AsdfFile asdfFile) {
+        return open(asdfFile, false);
+    }
+
+    private static RomanModel<?> open(final AsdfFile asdfFile, final boolean manageAsdfFile) {
+        if (!asdfFile.getTree().containsKey("roman")) {
             throw new RomanDatamodelsException("ASDF file does not appear to be a Roman file");
         }
 
         final AsdfNode romanNode = asdfFile.getTree().get("roman");
-        for (final Map.Entry<String, BiFunction<AsdfFile, AsdfNode, RomanModel<?>>> entry : MODELS.entrySet()) {
+        for (final Map.Entry<String, TriFunction<AsdfFile, AsdfNode, Boolean, RomanModel<?>>> entry : MODELS.entrySet()) {
             if (romanNode.getTag().startsWith(entry.getKey())) {
-                try {
-                    return entry.getValue().apply(asdfFile, romanNode);
-                } catch (final Exception e) {
-                    asdfFile.close();
-                    throw e;
-                }
+                return entry.getValue().apply(asdfFile, romanNode, manageAsdfFile);
             }
         }
-
-        asdfFile.close();
 
         throw new RomanDatamodelsException(String.format(
                 "Roman tag '%s' not yet supported by this library",
